@@ -1,13 +1,15 @@
 package info.asankan.phonegap.smsplugin;
 
-import android.app.Activity;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 
 public class SmsPlugin extends CordovaPlugin {
     public enum ActionType{
@@ -23,25 +25,41 @@ public class SmsPlugin extends CordovaPlugin {
 
     private PluginResult pluginResult;
 
+    private CallbackContext cc;
+    
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, intent);
+		if(resultCode==this.cordova.getActivity().RESULT_OK){
+			cc.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+		}else{
+			cc.sendPluginResult(new PluginResult(PluginResult.Status.ERROR));
+		}
+	}
+
+
 	@Override
 	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         action=action.toUpperCase();
-
+        this.cc = callbackContext;
         switch(ActionType.valueOf(action)){
             case SEND_SMS:
                 try {
                     String phoneNumber = args.getString(0);
                     String message = args.getString(1);
                     String method = args.getString(2);
-                    smsSender=new SmsSender(this.cordova.getActivity());
+//                    smsSender=new SmsSender(this.cordova.getActivity());
                     if(method.equalsIgnoreCase("INTENT")){
-                        smsSender.invokeSMSIntent(phoneNumber,message);
-                        callbackContext.sendPluginResult(new PluginResult( PluginResult.Status.NO_RESULT));
+//                        smsSender.invokeSMSIntent(phoneNumber,message);
+//                        callbackContext.sendPluginResult(new PluginResult( PluginResult.Status.NO_RESULT));
                     } else{
-                        smsSender.sendSMS(phoneNumber,message);
+//                        smsSender.sendSMS(phoneNumber,message);
+                    	Intent intent = new Intent(this.cordova.getActivity(), SmsSender.class); 
+                    	this.cordova.startActivityForResult(SmsPlugin.this, intent, 1);
                     }
 
-                    callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+                    
                     result=true;
                 }
                 catch (JSONException ex) {

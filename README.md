@@ -17,11 +17,11 @@
 
 #### Installation
 
-    phonegap plugin add https://github.com/asanka-x/Phonegap-SMS.git
+    phonegap plugin add https://github.com/mark-monserrat/Corodva-SMS.git
     
 __or__
     
-    cordova plugin add https://github.com/asanka-x/Phonegap-SMS.git
+    cordova plugin add https://github.com/mark-monserrat/Corodva-SMS.git
 	
 #### Require the plugin module
 
